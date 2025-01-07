@@ -1,0 +1,3 @@
+[submodule "3rdparty/libqwqngx"]
+	path = 3rdparty/libqwqngx
+	url = https://github.com/awasisto/libqwqngx.git
