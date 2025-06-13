@@ -6,7 +6,7 @@ COPY . .
 # Install dependencies
 
 RUN apt update \
-    && apt -y install git bzip2 g++ cmake libusb-1.0-0-dev libconfuse-dev \
+    && apt -y install git bzip2 g++ cmake libusb-1.0-0-dev libconfuse-dev curl \
     && ln -s $(find /usr/lib -name libusb-1.0.a -print -quit) /usr/local/lib/libusb-1.0.a \
     && ln -s $(find /usr/lib -name libusb-1.0.so -print -quit) /usr/local/lib/libusb-1.0.so
 
@@ -51,5 +51,7 @@ RUN apt -y purge --auto-remove git bzip2 g++ cmake libconfuse-dev \
 EXPOSE 8443
 EXPOSE 8080
 EXPOSE 50051
+
+HEALTHCHECK CMD ["curl", "-f", "http://localhost:8080/healthz"]
 
 CMD ["psirng", "-cert=/etc/psirng/cert.pem", "-key=/etc/psirng/key.pem"]
