@@ -7,10 +7,15 @@ An HTTP and gRPC API server for interacting with Quantum World Corporation
 This server eliminates driver-level buffering by flushing the internal buffer
 on every request, ensuring that the random numbers are freshly generated.
 
-Running
--------
+Running using Docker
+--------------------
 
-```
+```bash
+# Clone
+git clone --recurse-submodules https://github.com/nullspook/psirng.git
+cd psirng
+
+# Build Docker image and run container
 docker build -t psirng .
 docker run -d --name psirng \
            --device /dev/bus/usb `# or --privileged for more stability` \
