@@ -9,7 +9,9 @@ import (
 
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("HTTP %s %s from %s", r.Method, r.URL.Path, getRemoteAddress(r))
+		if r.URL.Path != "/healthz" {
+			log.Printf("HTTP %s %s from %s", r.Method, r.URL.Path, getRemoteAddress(r))
+		}
 		next.ServeHTTP(w, r)
 	})
 }
