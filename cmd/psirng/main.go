@@ -79,9 +79,9 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		grpcServer = grpc.NewServer(grpc.Creds(creds))
+		grpcServer = grpc.NewServer(grpc.Creds(creds), grpc.UnaryInterceptor(psirngGrpc.UnaryLoggingInterceptor()))
 	} else {
-		grpcServer = grpc.NewServer()
+		grpcServer = grpc.NewServer(grpc.UnaryInterceptor(psirngGrpc.UnaryLoggingInterceptor()))
 	}
 
 	rngServer := psirngGrpc.NewRngServerImpl(rngService)
