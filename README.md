@@ -16,7 +16,7 @@ git clone --recurse-submodules https://github.com/nullspook/psirng.git
 cd psirng
 
 # Build Docker image and run container
-docker build -t psirng .
+docker build -t psirng -f docker/Dockerfile .
 docker run -d --name psirng \
            --device /dev/bus/usb `# or --privileged for more stability` \
            -p 8443:8443 \
