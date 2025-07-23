@@ -18,7 +18,7 @@ cd psirng
 # Build Docker image and run container
 docker build -t psirng -f docker/Dockerfile .
 docker run -d --name psirng \
-           --device /dev/bus/usb `# or --privileged for more stability` \
+           --device /dev/bus/usb \
            -p 8443:8443 \
            -p 8080:8080 \
            -p 50051:50051 \
