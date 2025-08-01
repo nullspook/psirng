@@ -35,27 +35,27 @@ func NewRngServerImpl(rngService *services.RngService) *RngServerImpl {
 }
 
 func (s *RngServerImpl) RandBooleans(_ context.Context, request *RandBooleansRequest) (*RandBooleansResponse, error) {
-	data, err := s.rngService.RandBooleans(models.RandBooleansRequest{
+	resp, err := s.rngService.RandBooleans(models.RandBooleansRequest{
 		Length: &request.Length,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &RandBooleansResponse{Data: data}, nil
+	return &RandBooleansResponse{Data: resp.Data}, nil
 }
 
 func (s *RngServerImpl) RandBytes(_ context.Context, request *RandBytesRequest) (*RandBytesResponse, error) {
-	data, err := s.rngService.RandBytes(models.RandBytesRequest{
+	resp, err := s.rngService.RandBytes(models.RandBytesRequest{
 		Length: &request.Length,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &RandBytesResponse{Data: data}, nil
+	return &RandBytesResponse{Data: resp.Data}, nil
 }
 
 func (s *RngServerImpl) RandIntegers(_ context.Context, request *RandIntegersRequest) (*RandIntegersResponse, error) {
-	data, err := s.rngService.RandIntegers(models.RandIntegersRequest{
+	resp, err := s.rngService.RandIntegers(models.RandIntegersRequest{
 		Length: &request.Length,
 		Min:    &request.Min,
 		Max:    &request.Max,
@@ -63,11 +63,11 @@ func (s *RngServerImpl) RandIntegers(_ context.Context, request *RandIntegersReq
 	if err != nil {
 		return nil, err
 	}
-	return &RandIntegersResponse{Data: data}, nil
+	return &RandIntegersResponse{Data: resp.Data}, nil
 }
 
 func (s *RngServerImpl) RandUniform(_ context.Context, request *RandUniformRequest) (*RandUniformResponse, error) {
-	data, err := s.rngService.RandUniform(models.RandUniformRequest{
+	resp, err := s.rngService.RandUniform(models.RandUniformRequest{
 		Length: &request.Length,
 		Min:    &request.Min,
 		Max:    &request.Max,
@@ -75,11 +75,11 @@ func (s *RngServerImpl) RandUniform(_ context.Context, request *RandUniformReque
 	if err != nil {
 		return nil, err
 	}
-	return &RandUniformResponse{Data: data}, nil
+	return &RandUniformResponse{Data: resp.Data}, nil
 }
 
 func (s *RngServerImpl) RandNormal(_ context.Context, request *RandNormalRequest) (*RandNormalResponse, error) {
-	data, err := s.rngService.RandNormal(models.RandNormalRequest{
+	resp, err := s.rngService.RandNormal(models.RandNormalRequest{
 		Length: &request.Length,
 		Mean:   &request.Mean,
 		StdDev: &request.Stddev,
@@ -87,5 +87,5 @@ func (s *RngServerImpl) RandNormal(_ context.Context, request *RandNormalRequest
 	if err != nil {
 		return nil, err
 	}
-	return &RandNormalResponse{Data: data}, nil
+	return &RandNormalResponse{Data: resp.Data}, nil
 }

@@ -34,19 +34,19 @@ Usage
 
 ```
 $ curl 'http://localhost:8080/api/randbooleans?length=3'
-[false,true,true]
+{"data":[false,true,true]}
 
 $ curl 'http://localhost:8080/api/randbytes?length=32'
-"G4xZkM87+0hyZP47gHhDm1DE+L11Qv2ZRK9ZjKKoVvI="
+{"data":"G4xZkM87+0hyZP47gHhDm1DE+L11Qv2ZRK9ZjKKoVvI="}
 
 $ curl 'http://localhost:8080/api/randintegers?min=-5&max=10&length=10'
-[9,6,9,9,7,-5,9,1,-1,6]
+{"data":[9,6,9,9,7,-5,9,1,-1,6]}
 
 $ curl 'http://localhost:8080/api/randuniform?min=-5.0&max=10.0&length=3'
-[-3.0741757164702896,9.293731260430167,6.09011301791039]
+{"data":[-3.0741757164702896,9.293731260430167,6.09011301791039]}
 
 $ curl 'http://localhost:8080/api/randnormal?mean=0.0&stddev=1.0&length=3'
-[0.4821670713280625,-1.5485153368469722,1.2983731290714078]
+{"data":[0.4821670713280625,-1.5485153368469722,1.2983731290714078]}
 
 $ curl 'http://localhost:8080/healthz'
 {"status":"OK","time":"2025-06-01T10:23:26.480337861Z"}

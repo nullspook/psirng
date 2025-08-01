@@ -57,13 +57,13 @@ func (c *RngController) RandBooleans(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := c.rngService.RandBooleans(randBooleansRequest)
+	resp, err := c.rngService.RandBooleans(randBooleansRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	writeJsonResponse(w, data)
+	writeJsonResponse(w, resp)
 }
 
 func (c *RngController) RandBytes(w http.ResponseWriter, r *http.Request) {
@@ -78,13 +78,13 @@ func (c *RngController) RandBytes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := c.rngService.RandBytes(randBytesRequest)
+	resp, err := c.rngService.RandBytes(randBytesRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	writeJsonResponse(w, data)
+	writeJsonResponse(w, resp)
 }
 
 func (c *RngController) RandIntegers(w http.ResponseWriter, r *http.Request) {
@@ -99,13 +99,13 @@ func (c *RngController) RandIntegers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := c.rngService.RandIntegers(randIntegersRequest)
+	resp, err := c.rngService.RandIntegers(randIntegersRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	writeJsonResponse(w, data)
+	writeJsonResponse(w, resp)
 }
 
 func (c *RngController) RandUniform(w http.ResponseWriter, r *http.Request) {
@@ -120,13 +120,13 @@ func (c *RngController) RandUniform(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := c.rngService.RandUniform(randUniformRequest)
+	resp, err := c.rngService.RandUniform(randUniformRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	writeJsonResponse(w, data)
+	writeJsonResponse(w, resp)
 }
 
 func (c *RngController) RandNormal(w http.ResponseWriter, r *http.Request) {
@@ -141,13 +141,13 @@ func (c *RngController) RandNormal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := c.rngService.RandNormal(randNormalRequest)
+	resp, err := c.rngService.RandNormal(randNormalRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	writeJsonResponse(w, data)
+	writeJsonResponse(w, resp)
 }
 
 func writeJsonResponse(w http.ResponseWriter, data interface{}) {
