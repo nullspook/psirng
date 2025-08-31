@@ -17,7 +17,7 @@
  * along with psirng.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package qwqng
+package qwqngx
 
 /*
 #cgo LDFLAGS: -lqwqngx
@@ -39,19 +39,19 @@ func initQwqngx() (*C.qwqngx, error) {
 	return qwqngx, nil
 }
 
-type Qwqng struct {
+type Qwqngx struct {
 	qwqngx *C.qwqngx
 }
 
-func NewQwqng() *Qwqng {
-	q := &Qwqng{}
+func NewQwqngx() *Qwqngx {
+	q := &Qwqngx{}
 	if err := q.initQwqngx(); err != nil {
 		log.Println("failed to initialize qwqngx")
 	}
 	return q
 }
 
-func (q *Qwqng) initQwqngx() error {
+func (q *Qwqngx) initQwqngx() error {
 	qwqngx, err := initQwqngx()
 	if err != nil {
 		return err
@@ -60,11 +60,11 @@ func (q *Qwqng) initQwqngx() error {
 	return nil
 }
 
-func (q *Qwqng) Close() {
+func (q *Qwqngx) Close() {
 	C.qwqngx_free(q.qwqngx)
 }
 
-func (q *Qwqng) Clear() error {
+func (q *Qwqngx) ClearBuffer() error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)
@@ -84,7 +84,7 @@ func (q *Qwqng) Clear() error {
 	return nil
 }
 
-func (q *Qwqng) RandBytes(dest []byte, length int32) error {
+func (q *Qwqngx) RandBytes(dest []byte, length int32) error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)
@@ -104,7 +104,7 @@ func (q *Qwqng) RandBytes(dest []byte, length int32) error {
 	return nil
 }
 
-func (q *Qwqng) RandIntegers(dest []int32, length, min, max int32) error {
+func (q *Qwqngx) RandIntegers(dest []int32, length, min, max int32) error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)
@@ -124,7 +124,7 @@ func (q *Qwqng) RandIntegers(dest []int32, length, min, max int32) error {
 	return nil
 }
 
-func (q *Qwqng) RandUniform(dest []float64, length int32, min, max float64) error {
+func (q *Qwqngx) RandUniform(dest []float64, length int32, min, max float64) error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)
@@ -144,7 +144,7 @@ func (q *Qwqng) RandUniform(dest []float64, length int32, min, max float64) erro
 	return nil
 }
 
-func (q *Qwqng) RandNormal(dest []float64, length int32, mean, stddev float64) error {
+func (q *Qwqngx) RandNormal(dest []float64, length int32, mean, stddev float64) error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)

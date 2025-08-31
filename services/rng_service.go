@@ -21,24 +21,24 @@ package services
 
 import (
 	"psirng/models"
-	"psirng/qwqng"
+	"psirng/providers"
 	"sync"
 )
 
 type RngService struct {
-	qwqng *qwqng.Qwqng
+	rng   providers.RngProvider
 	mutex *sync.Mutex
 }
 
-func NewRngService(qwqng *qwqng.Qwqng) *RngService {
+func NewRngService(rng providers.RngProvider) *RngService {
 	return &RngService{
-		qwqng: qwqng,
+		rng:   rng,
 		mutex: &sync.Mutex{},
 	}
 }
 
 func (s *RngService) Close() {
-	s.qwqng.Close()
+	s.rng.Close()
 }
 
 func (s *RngService) RandBooleans(request models.RandBooleansRequest) (*models.RandBooleansResponse, error) {
@@ -50,11 +50,11 @@ func (s *RngService) RandBooleans(request models.RandBooleansRequest) (*models.R
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	if err := s.qwqng.Clear(); err != nil {
+	if err := s.rng.ClearBuffer(); err != nil {
 		return nil, err
 	}
 
-	if err := s.qwqng.RandBytes(buffer, int32(bufferLength)); err != nil {
+	if err := s.rng.RandBytes(buffer, int32(bufferLength)); err != nil {
 		return nil, err
 	}
 
@@ -71,11 +71,11 @@ func (s *RngService) RandBytes(request models.RandBytesRequest) (*models.RandByt
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	if err := s.qwqng.Clear(); err != nil {
+	if err := s.rng.ClearBuffer(); err != nil {
 		return nil, err
 	}
 
-	if err := s.qwqng.RandBytes(result, int32(*request.Length)); err != nil {
+	if err := s.rng.RandBytes(result, int32(*request.Length)); err != nil {
 		return nil, err
 	}
 
@@ -88,11 +88,11 @@ func (s *RngService) RandIntegers(request models.RandIntegersRequest) (*models.R
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	if err := s.qwqng.Clear(); err != nil {
+	if err := s.rng.ClearBuffer(); err != nil {
 		return nil, err
 	}
 
-	if err := s.qwqng.RandIntegers(result, int32(*request.Length), *request.Min, *request.Max); err != nil {
+	if err := s.rng.RandIntegers(result, int32(*request.Length), *request.Min, *request.Max); err != nil {
 		return nil, err
 	}
 
@@ -105,11 +105,11 @@ func (s *RngService) RandUniform(request models.RandUniformRequest) (*models.Ran
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	if err := s.qwqng.Clear(); err != nil {
+	if err := s.rng.ClearBuffer(); err != nil {
 		return nil, err
 	}
 
-	if err := s.qwqng.RandUniform(result, int32(*request.Length), *request.Min, *request.Max); err != nil {
+	if err := s.rng.RandUniform(result, int32(*request.Length), *request.Min, *request.Max); err != nil {
 		return nil, err
 	}
 
@@ -122,11 +122,11 @@ func (s *RngService) RandNormal(request models.RandNormalRequest) (*models.RandN
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	if err := s.qwqng.Clear(); err != nil {
+	if err := s.rng.ClearBuffer(); err != nil {
 		return nil, err
 	}
 
-	if err := s.qwqng.RandNormal(result, int32(*request.Length), *request.Mean, *request.StdDev); err != nil {
+	if err := s.rng.RandNormal(result, int32(*request.Length), *request.Mean, *request.StdDev); err != nil {
 		return nil, err
 	}
 
