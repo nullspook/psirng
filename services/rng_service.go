@@ -42,10 +42,10 @@ func (s *RngService) Close() {
 }
 
 func (s *RngService) RandBooleans(request models.RandBooleansRequest) (*models.RandBooleansResponse, error) {
-	result := make([]bool, *request.Length)
+	data := make([]bool, *request.Length)
 
-	bufferLength := (*request.Length + 7) >> 3
-	buffer := make([]byte, bufferLength)
+	byteBufferLength := (*request.Length + 7) / 8
+	byteBuffer := make([]byte, byteBufferLength)
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -54,19 +54,19 @@ func (s *RngService) RandBooleans(request models.RandBooleansRequest) (*models.R
 		return nil, err
 	}
 
-	if err := s.rng.RandBytes(buffer, int32(bufferLength)); err != nil {
+	if err := s.rng.RandBytes(byteBuffer); err != nil {
 		return nil, err
 	}
 
 	for i := 0; i < int(*request.Length); i++ {
-		result[i] = (buffer[i>>3] >> (i & 7) & 1) != 0
+		data[i] = (byteBuffer[i>>3] >> (i & 7) & 1) != 0
 	}
 
-	return &models.RandBooleansResponse{Data: result}, nil
+	return &models.RandBooleansResponse{Data: data}, nil
 }
 
 func (s *RngService) RandBytes(request models.RandBytesRequest) (*models.RandBytesResponse, error) {
-	result := make([]byte, *request.Length)
+	data := make([]byte, *request.Length)
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -75,15 +75,15 @@ func (s *RngService) RandBytes(request models.RandBytesRequest) (*models.RandByt
 		return nil, err
 	}
 
-	if err := s.rng.RandBytes(result, int32(*request.Length)); err != nil {
+	if err := s.rng.RandBytes(data); err != nil {
 		return nil, err
 	}
 
-	return &models.RandBytesResponse{Data: result}, nil
+	return &models.RandBytesResponse{Data: data}, nil
 }
 
 func (s *RngService) RandIntegers(request models.RandIntegersRequest) (*models.RandIntegersResponse, error) {
-	result := make([]int32, *request.Length)
+	data := make([]int32, *request.Length)
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -92,15 +92,15 @@ func (s *RngService) RandIntegers(request models.RandIntegersRequest) (*models.R
 		return nil, err
 	}
 
-	if err := s.rng.RandIntegers(result, int32(*request.Length), *request.Min, *request.Max); err != nil {
+	if err := s.rng.RandIntegers(data, *request.Min, *request.Max); err != nil {
 		return nil, err
 	}
 
-	return &models.RandIntegersResponse{Data: result}, nil
+	return &models.RandIntegersResponse{Data: data}, nil
 }
 
 func (s *RngService) RandUniform(request models.RandUniformRequest) (*models.RandUniformResponse, error) {
-	result := make([]float64, *request.Length)
+	data := make([]float64, *request.Length)
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -109,15 +109,15 @@ func (s *RngService) RandUniform(request models.RandUniformRequest) (*models.Ran
 		return nil, err
 	}
 
-	if err := s.rng.RandUniform(result, int32(*request.Length), *request.Min, *request.Max); err != nil {
+	if err := s.rng.RandUniform(data, *request.Min, *request.Max); err != nil {
 		return nil, err
 	}
 
-	return &models.RandUniformResponse{Data: result}, nil
+	return &models.RandUniformResponse{Data: data}, nil
 }
 
 func (s *RngService) RandNormal(request models.RandNormalRequest) (*models.RandNormalResponse, error) {
-	result := make([]float64, *request.Length)
+	data := make([]float64, *request.Length)
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -126,9 +126,9 @@ func (s *RngService) RandNormal(request models.RandNormalRequest) (*models.RandN
 		return nil, err
 	}
 
-	if err := s.rng.RandNormal(result, int32(*request.Length), *request.Mean, *request.StdDev); err != nil {
+	if err := s.rng.RandNormal(data, *request.Mean, *request.StdDev); err != nil {
 		return nil, err
 	}
 
-	return &models.RandNormalResponse{Data: result}, nil
+	return &models.RandNormalResponse{Data: data}, nil
 }

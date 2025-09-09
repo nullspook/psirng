@@ -33,7 +33,7 @@ import (
 	psirngGrpc "psirng/grpc"
 	"psirng/healthcheckers"
 	"psirng/httpapi"
-	"psirng/providers/qwqngx"
+	"psirng/providers/rng"
 	"psirng/services"
 )
 
@@ -42,9 +42,12 @@ func main() {
 	keyFilePath := flag.String("key", "", "TLS key file")
 	flag.Parse()
 
-	qwqng := qwqngx.NewQwqngx()
+	rngProvider, err := rng.NewQwqngxRngProvider()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	rngService := services.NewRngService(qwqng)
+	rngService := services.NewRngService(rngProvider)
 
 	rngHealthChecker := healthcheckers.NewRngHealthChecker(rngService)
 
