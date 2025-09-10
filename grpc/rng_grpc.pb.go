@@ -22,6 +22,7 @@ type RngClient interface {
 	RandIntegers(ctx context.Context, in *RandIntegersRequest, opts ...grpc.CallOption) (*RandIntegersResponse, error)
 	RandUniform(ctx context.Context, in *RandUniformRequest, opts ...grpc.CallOption) (*RandUniformResponse, error)
 	RandNormal(ctx context.Context, in *RandNormalRequest, opts ...grpc.CallOption) (*RandNormalResponse, error)
+	RandBooleansBiasAmplified(ctx context.Context, in *RandBooleansBiasAmplifiedRequest, opts ...grpc.CallOption) (*RandBooleansBiasAmplifiedResponse, error)
 }
 
 type rngClient struct {
@@ -77,6 +78,15 @@ func (c *rngClient) RandNormal(ctx context.Context, in *RandNormalRequest, opts 
 	return out, nil
 }
 
+func (c *rngClient) RandBooleansBiasAmplified(ctx context.Context, in *RandBooleansBiasAmplifiedRequest, opts ...grpc.CallOption) (*RandBooleansBiasAmplifiedResponse, error) {
+	out := new(RandBooleansBiasAmplifiedResponse)
+	err := c.cc.Invoke(ctx, "/psirng.Rng/RandBooleansBiasAmplified", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RngServer is the server API for Rng service.
 // All implementations must embed UnimplementedRngServer
 // for forward compatibility
@@ -86,6 +96,7 @@ type RngServer interface {
 	RandIntegers(context.Context, *RandIntegersRequest) (*RandIntegersResponse, error)
 	RandUniform(context.Context, *RandUniformRequest) (*RandUniformResponse, error)
 	RandNormal(context.Context, *RandNormalRequest) (*RandNormalResponse, error)
+	RandBooleansBiasAmplified(context.Context, *RandBooleansBiasAmplifiedRequest) (*RandBooleansBiasAmplifiedResponse, error)
 	mustEmbedUnimplementedRngServer()
 }
 
@@ -107,6 +118,9 @@ func (UnimplementedRngServer) RandUniform(context.Context, *RandUniformRequest) 
 }
 func (UnimplementedRngServer) RandNormal(context.Context, *RandNormalRequest) (*RandNormalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RandNormal not implemented")
+}
+func (UnimplementedRngServer) RandBooleansBiasAmplified(context.Context, *RandBooleansBiasAmplifiedRequest) (*RandBooleansBiasAmplifiedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RandBooleansBiasAmplified not implemented")
 }
 func (UnimplementedRngServer) mustEmbedUnimplementedRngServer() {}
 
@@ -211,6 +225,24 @@ func _Rng_RandNormal_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rng_RandBooleansBiasAmplified_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RandBooleansBiasAmplifiedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RngServer).RandBooleansBiasAmplified(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/psirng.Rng/RandBooleansBiasAmplified",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RngServer).RandBooleansBiasAmplified(ctx, req.(*RandBooleansBiasAmplifiedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Rng_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "psirng.Rng",
 	HandlerType: (*RngServer)(nil),
@@ -234,6 +266,10 @@ var _Rng_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RandNormal",
 			Handler:    _Rng_RandNormal_Handler,
+		},
+		{
+			MethodName: "RandBooleansBiasAmplified",
+			Handler:    _Rng_RandBooleansBiasAmplified_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

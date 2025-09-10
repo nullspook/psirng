@@ -150,6 +150,27 @@ func (c *RngController) RandNormal(w http.ResponseWriter, r *http.Request) {
 	writeJsonResponse(w, resp)
 }
 
+func (c *RngController) RandBooleansBiasAmplified(w http.ResponseWriter, r *http.Request) {
+	var randBooleansBiasAmplifiedRequest models.RandBooleansBiasAmplifiedRequest
+	if err := decoder.Decode(&randBooleansBiasAmplifiedRequest, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := validate.Struct(randBooleansBiasAmplifiedRequest); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	resp, err := c.rngService.RandBooleansBiasAmplified(randBooleansBiasAmplifiedRequest)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	writeJsonResponse(w, resp)
+}
+
 func writeJsonResponse(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {

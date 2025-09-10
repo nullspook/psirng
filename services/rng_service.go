@@ -21,16 +21,16 @@ package services
 
 import (
 	"psirng/models"
-	"psirng/providers"
+	"psirng/providers/rng"
 	"sync"
 )
 
 type RngService struct {
-	rng   providers.RngProvider
+	rng   rng.RngProvider
 	mutex *sync.Mutex
 }
 
-func NewRngService(rng providers.RngProvider) *RngService {
+func NewRngService(rng rng.RngProvider) *RngService {
 	return &RngService{
 		rng:   rng,
 		mutex: &sync.Mutex{},
@@ -131,4 +131,61 @@ func (s *RngService) RandNormal(request models.RandNormalRequest) (*models.RandN
 	}
 
 	return &models.RandNormalResponse{Data: data}, nil
+}
+
+func (s *RngService) RandBooleansBiasAmplified(request models.RandBooleansBiasAmplifiedRequest) (*models.RandBooleansBiasAmplifiedResponse, error) {
+	data := make([]bool, *request.Length)
+
+	// Level 0: bound = 1 (no amplification)
+	// Level 1: bound = 2 (reverse von Neumann)
+	// Level 2: bound = 3
+	// Level 3: bound = 4
+	// ...
+	bound := int(*request.AmplificationLevel + 1)
+
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if err := s.rng.ClearBuffer(); err != nil {
+		return nil, err
+	}
+
+	var byteBuffer [1]byte
+	bitIndex := 8
+	randBoolean := func() (bool, error) {
+		if bitIndex == 8 {
+			if err := s.rng.RandBytes(byteBuffer[:]); err != nil {
+				return false, err
+			}
+			bitIndex = 0
+		}
+		bit := (byteBuffer[0] >> bitIndex) & 1
+		bitIndex++
+		return bit != 0, nil
+	}
+
+	for i := 0; i < int(*request.Length); i++ {
+		position := 0
+
+		for {
+			b, err := randBoolean()
+			if err != nil {
+				return nil, err
+			}
+
+			if b {
+				position++
+			} else {
+				position--
+			}
+
+			if position == bound || position == -bound {
+				break
+			}
+		}
+
+		data[i] = position > 0
+	}
+
+	return &models.RandBooleansBiasAmplifiedResponse{Data: data}, nil
 }

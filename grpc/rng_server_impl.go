@@ -89,3 +89,14 @@ func (s *RngServerImpl) RandNormal(_ context.Context, request *RandNormalRequest
 	}
 	return &RandNormalResponse{Data: resp.Data}, nil
 }
+
+func (s *RngServerImpl) RandBooleansBiasAmplified(_ context.Context, request *RandBooleansBiasAmplifiedRequest) (*RandBooleansBiasAmplifiedResponse, error) {
+	resp, err := s.rngService.RandBooleansBiasAmplified(models.RandBooleansBiasAmplifiedRequest{
+		Length:             &request.Length,
+		AmplificationLevel: &request.AmplificationLevel,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &RandBooleansBiasAmplifiedResponse{Data: resp.Data}, nil
+}
