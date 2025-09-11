@@ -19,7 +19,7 @@
 
 package rng
 
-type RngProvider interface {
+type Provider interface {
 	Close()
 	ClearBuffer() error
 	RandBytes(dest []byte) error

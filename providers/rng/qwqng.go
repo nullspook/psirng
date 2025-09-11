@@ -39,20 +39,20 @@ func initQwqngx() (*C.qwqngx, error) {
 	return qwqngx, nil
 }
 
-type QwqngxRngProvider struct {
+type Qwqng struct {
 	qwqngx *C.qwqngx
-	baseRngProvider
+	base
 }
 
-func NewQwqngxRngProvider() (*QwqngxRngProvider, error) {
-	q := &QwqngxRngProvider{}
+func NewQwqng() (*Qwqng, error) {
+	q := &Qwqng{}
 
-	base, err := newBaseRngProvider(q)
+	base, err := newBase(q)
 	if err != nil {
 		return nil, err
 	}
 
-	q.baseRngProvider = *base
+	q.base = *base
 
 	if err := q.initQwqngx(); err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func NewQwqngxRngProvider() (*QwqngxRngProvider, error) {
 	return q, nil
 }
 
-func (q *QwqngxRngProvider) initQwqngx() error {
+func (q *Qwqng) initQwqngx() error {
 	qwqngx, err := initQwqngx()
 	if err != nil {
 		return err
@@ -70,11 +70,11 @@ func (q *QwqngxRngProvider) initQwqngx() error {
 	return nil
 }
 
-func (q *QwqngxRngProvider) Close() {
+func (q *Qwqng) Close() {
 	C.qwqngx_free(q.qwqngx)
 }
 
-func (q *QwqngxRngProvider) ClearBuffer() error {
+func (q *Qwqng) ClearBuffer() error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)
@@ -94,7 +94,7 @@ func (q *QwqngxRngProvider) ClearBuffer() error {
 	return nil
 }
 
-func (q *QwqngxRngProvider) RandBytes(dest []byte) error {
+func (q *Qwqng) RandBytes(dest []byte) error {
 	if q.qwqngx == nil {
 		if err := q.initQwqngx(); err != nil {
 			log.Println(err)

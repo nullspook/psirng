@@ -42,12 +42,12 @@ func main() {
 	keyFilePath := flag.String("key", "", "TLS key file")
 	flag.Parse()
 
-	rngProvider, err := rng.NewQwqngxRngProvider()
+	rng, err := rng.NewQwqng()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	rngService := services.NewRngService(rngProvider)
+	rngService := services.NewRngService(rng)
 
 	rngHealthChecker := healthcheckers.NewRngHealthChecker(rngService)
 

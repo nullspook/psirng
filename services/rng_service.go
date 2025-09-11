@@ -26,11 +26,11 @@ import (
 )
 
 type RngService struct {
-	rng   rng.RngProvider
+	rng   rng.Provider
 	mutex *sync.Mutex
 }
 
-func NewRngService(rng rng.RngProvider) *RngService {
+func NewRngService(rng rng.Provider) *RngService {
 	return &RngService{
 		rng:   rng,
 		mutex: &sync.Mutex{},

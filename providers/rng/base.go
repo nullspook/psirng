@@ -24,14 +24,14 @@ import (
 	"math"
 )
 
-type baseRngProvider struct {
+type base struct {
 	zignor zignor
-	RngProvider
+	Provider
 }
 
-func newBaseRngProvider(self RngProvider) (*baseRngProvider, error) {
-	rp := &baseRngProvider{
-		RngProvider: self,
+func newBase(self Provider) (*base, error) {
+	rp := &base{
+		Provider: self,
 	}
 
 	rp.zignor = *newZignor(
@@ -54,7 +54,7 @@ func newBaseRngProvider(self RngProvider) (*baseRngProvider, error) {
 	return rp, nil
 }
 
-func (rp *baseRngProvider) RandIntegers(dest []int32, min, max int32) error {
+func (b *base) RandIntegers(dest []int32, min, max int32) error {
 	if min == max {
 		// only one possible value
 		for i := 0; i < len(dest); i++ {
@@ -66,7 +66,7 @@ func (rp *baseRngProvider) RandIntegers(dest []int32, min, max int32) error {
 	if min == math.MinInt32 && max == math.MaxInt32 {
 		// full int32 range
 		byteBuffer := make([]byte, len(dest)*4)
-		if err := rp.RandBytes(byteBuffer); err != nil {
+		if err := b.RandBytes(byteBuffer); err != nil {
 			return err
 		}
 		for i := 0; i < len(dest); i++ {
@@ -83,7 +83,7 @@ func (rp *baseRngProvider) RandIntegers(dest []int32, min, max int32) error {
 	if bound&mask == 0 {
 		// bound is a power of two
 		for i := 0; i < len(dest); i++ {
-			if err := rp.RandBytes(randomUInt32Buffer[:]); err != nil {
+			if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
 				return err
 			}
 			random32 := binary.LittleEndian.Uint32(randomUInt32Buffer[:])
@@ -94,7 +94,7 @@ func (rp *baseRngProvider) RandIntegers(dest []int32, min, max int32) error {
 		// M.E. O'Neill. "Efficiently Generating a Number in a Range". PCG, A Better Random Number Generator.
 		// https://www.pcg-random.org/posts/bounded-rands.html
 		for i := 0; i < len(dest); i++ {
-			if err := rp.RandBytes(randomUInt32Buffer[:]); err != nil {
+			if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
 				return err
 			}
 			random32 := binary.LittleEndian.Uint32(randomUInt32Buffer[:])
@@ -109,7 +109,7 @@ func (rp *baseRngProvider) RandIntegers(dest []int32, min, max int32) error {
 					}
 				}
 				for l < t {
-					if err := rp.RandBytes(randomUInt32Buffer[:]); err != nil {
+					if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
 						return err
 					}
 					random32 = binary.LittleEndian.Uint32(randomUInt32Buffer[:])
@@ -124,11 +124,11 @@ func (rp *baseRngProvider) RandIntegers(dest []int32, min, max int32) error {
 	return nil
 }
 
-func (rp *baseRngProvider) RandUniform(dest []float64, min, max float64) error {
+func (b *base) RandUniform(dest []float64, min, max float64) error {
 	scale := max - min
 	byteBuffer := make([]byte, len(dest)*8)
 
-	if err := rp.RandBytes(byteBuffer); err != nil {
+	if err := b.RandBytes(byteBuffer); err != nil {
 		return err
 	}
 
@@ -140,14 +140,14 @@ func (rp *baseRngProvider) RandUniform(dest []float64, min, max float64) error {
 	return nil
 }
 
-func (rp *baseRngProvider) RandNormal(dest []float64, mean, stddev float64) error {
+func (b *base) RandNormal(dest []float64, mean, stddev float64) error {
 	var (
 		dRanNormalZigValue float64
 		err                error
 	)
 
 	for i := 0; i < len(dest); i++ {
-		if dRanNormalZigValue, err = rp.zignor.dRanNormalZig(); err != nil {
+		if dRanNormalZigValue, err = b.zignor.dRanNormalZig(); err != nil {
 			return err
 		}
 		dest[i] = mean + stddev*dRanNormalZigValue
