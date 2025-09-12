@@ -70,57 +70,58 @@ func (b *base) RandIntegers(dest []int32, min, max int32) error {
 			return err
 		}
 		for i := 0; i < len(dest); i++ {
-			dest[i] = int32(binary.LittleEndian.Uint32(byteBuffer[i*4 : i*4+4]))
+			offset := i * 4
+			dest[i] = int32(binary.LittleEndian.Uint32(byteBuffer[offset : offset+4]))
+		}
+		return nil
+	}
+
+	bound := uint32(uint64(int64(max)-int64(min)) + 1)
+	mask := bound - 1
+
+	if bound&mask == 0 {
+		// bound is a power of two
+		byteBuffer := make([]byte, len(dest)*4)
+		if err := b.RandBytes(byteBuffer); err != nil {
+			return err
+		}
+		for i := 0; i < len(dest); i++ {
+			offset := i * 4
+			random32 := binary.LittleEndian.Uint32(byteBuffer[offset : offset+4])
+			dest[i] = min + int32(random32&mask)
 		}
 		return nil
 	}
 
 	var randomUInt32Buffer [4]byte
-
-	bound := uint32(max-min) + 1
-	mask := bound - 1
-
-	if bound&mask == 0 {
-		// bound is a power of two
-		for i := 0; i < len(dest); i++ {
-			if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
-				return err
-			}
-			random32 := binary.LittleEndian.Uint32(randomUInt32Buffer[:])
-			dest[i] = min + int32(random32&mask)
-		}
-		return nil
-	} else {
+	for i := 0; i < len(dest); i++ {
 		// M.E. O'Neill. "Efficiently Generating a Number in a Range". PCG, A Better Random Number Generator.
 		// https://www.pcg-random.org/posts/bounded-rands.html
-		for i := 0; i < len(dest); i++ {
-			if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
-				return err
-			}
-			random32 := binary.LittleEndian.Uint32(randomUInt32Buffer[:])
-			m := uint64(random32) * uint64(bound)
-			l := uint32(m)
-			if l < bound {
-				t := -bound
-				if t >= bound {
-					t -= bound
-					if t >= bound {
-						t %= bound
-					}
-				}
-				for l < t {
-					if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
-						return err
-					}
-					random32 = binary.LittleEndian.Uint32(randomUInt32Buffer[:])
-					m = uint64(random32) * uint64(bound)
-					l = uint32(m)
-				}
-			}
-			dest[i] = min + int32(m>>32)
+		if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
+			return err
 		}
+		random32 := binary.LittleEndian.Uint32(randomUInt32Buffer[:])
+		m := uint64(random32) * uint64(bound)
+		l := uint32(m)
+		if l < bound {
+			t := -bound
+			if t >= bound {
+				t -= bound
+				if t >= bound {
+					t %= bound
+				}
+			}
+			for l < t {
+				if err := b.RandBytes(randomUInt32Buffer[:]); err != nil {
+					return err
+				}
+				random32 = binary.LittleEndian.Uint32(randomUInt32Buffer[:])
+				m = uint64(random32) * uint64(bound)
+				l = uint32(m)
+			}
+		}
+		dest[i] = min + int32(m>>32)
 	}
-
 	return nil
 }
 
