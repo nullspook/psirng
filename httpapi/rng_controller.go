@@ -57,7 +57,7 @@ func (c *RngController) RandBooleans(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.rngService.RandBooleans(randBooleansRequest)
+	resp, err := c.rngService.RandBooleans(r.Context(), randBooleansRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,7 +78,7 @@ func (c *RngController) RandBytes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.rngService.RandBytes(randBytesRequest)
+	resp, err := c.rngService.RandBytes(r.Context(), randBytesRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -99,7 +99,7 @@ func (c *RngController) RandIntegers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.rngService.RandIntegers(randIntegersRequest)
+	resp, err := c.rngService.RandIntegers(r.Context(), randIntegersRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -120,7 +120,7 @@ func (c *RngController) RandUniform(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.rngService.RandUniform(randUniformRequest)
+	resp, err := c.rngService.RandUniform(r.Context(), randUniformRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -141,7 +141,7 @@ func (c *RngController) RandNormal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.rngService.RandNormal(randNormalRequest)
+	resp, err := c.rngService.RandNormal(r.Context(), randNormalRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -162,7 +162,7 @@ func (c *RngController) RandBooleansBiasAmplified(w http.ResponseWriter, r *http
 		return
 	}
 
-	resp, err := c.rngService.RandBooleansBiasAmplified(randBooleansBiasAmplifiedRequest)
+	resp, err := c.rngService.RandBooleansBiasAmplified(r.Context(), randBooleansBiasAmplifiedRequest)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

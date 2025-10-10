@@ -20,6 +20,7 @@
 package services
 
 import (
+	"context"
 	"psirng/models"
 	"psirng/providers/rng"
 	"sync"
@@ -41,7 +42,7 @@ func (s *RngService) Close() {
 	s.rng.Close()
 }
 
-func (s *RngService) RandBooleans(request models.RandBooleansRequest) (*models.RandBooleansResponse, error) {
+func (s *RngService) RandBooleans(ctx context.Context, request models.RandBooleansRequest) (*models.RandBooleansResponse, error) {
 	data := make([]bool, *request.Length)
 
 	byteBufferLength := (*request.Length + 7) / 8
@@ -65,7 +66,7 @@ func (s *RngService) RandBooleans(request models.RandBooleansRequest) (*models.R
 	return &models.RandBooleansResponse{Data: data}, nil
 }
 
-func (s *RngService) RandBytes(request models.RandBytesRequest) (*models.RandBytesResponse, error) {
+func (s *RngService) RandBytes(ctx context.Context, request models.RandBytesRequest) (*models.RandBytesResponse, error) {
 	data := make([]byte, *request.Length)
 
 	s.mutex.Lock()
@@ -82,7 +83,7 @@ func (s *RngService) RandBytes(request models.RandBytesRequest) (*models.RandByt
 	return &models.RandBytesResponse{Data: data}, nil
 }
 
-func (s *RngService) RandIntegers(request models.RandIntegersRequest) (*models.RandIntegersResponse, error) {
+func (s *RngService) RandIntegers(ctx context.Context, request models.RandIntegersRequest) (*models.RandIntegersResponse, error) {
 	data := make([]int32, *request.Length)
 
 	s.mutex.Lock()
@@ -99,7 +100,7 @@ func (s *RngService) RandIntegers(request models.RandIntegersRequest) (*models.R
 	return &models.RandIntegersResponse{Data: data}, nil
 }
 
-func (s *RngService) RandUniform(request models.RandUniformRequest) (*models.RandUniformResponse, error) {
+func (s *RngService) RandUniform(ctx context.Context, request models.RandUniformRequest) (*models.RandUniformResponse, error) {
 	data := make([]float64, *request.Length)
 
 	s.mutex.Lock()
@@ -116,7 +117,7 @@ func (s *RngService) RandUniform(request models.RandUniformRequest) (*models.Ran
 	return &models.RandUniformResponse{Data: data}, nil
 }
 
-func (s *RngService) RandNormal(request models.RandNormalRequest) (*models.RandNormalResponse, error) {
+func (s *RngService) RandNormal(ctx context.Context, request models.RandNormalRequest) (*models.RandNormalResponse, error) {
 	data := make([]float64, *request.Length)
 
 	s.mutex.Lock()
@@ -133,7 +134,7 @@ func (s *RngService) RandNormal(request models.RandNormalRequest) (*models.RandN
 	return &models.RandNormalResponse{Data: data}, nil
 }
 
-func (s *RngService) RandBooleansBiasAmplified(request models.RandBooleansBiasAmplifiedRequest) (*models.RandBooleansBiasAmplifiedResponse, error) {
+func (s *RngService) RandBooleansBiasAmplified(ctx context.Context, request models.RandBooleansBiasAmplifiedRequest) (*models.RandBooleansBiasAmplifiedResponse, error) {
 	data := make([]bool, *request.Length)
 
 	// Level 0: bound = 1 (no amplification)

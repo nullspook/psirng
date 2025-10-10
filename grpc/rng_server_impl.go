@@ -34,8 +34,8 @@ func NewRngServerImpl(rngService *services.RngService) *RngServerImpl {
 	return &RngServerImpl{rngService: rngService}
 }
 
-func (s *RngServerImpl) RandBooleans(_ context.Context, request *RandBooleansRequest) (*RandBooleansResponse, error) {
-	resp, err := s.rngService.RandBooleans(models.RandBooleansRequest{
+func (s *RngServerImpl) RandBooleans(ctx context.Context, request *RandBooleansRequest) (*RandBooleansResponse, error) {
+	resp, err := s.rngService.RandBooleans(ctx, models.RandBooleansRequest{
 		Length: &request.Length,
 	})
 	if err != nil {
@@ -44,8 +44,8 @@ func (s *RngServerImpl) RandBooleans(_ context.Context, request *RandBooleansReq
 	return &RandBooleansResponse{Data: resp.Data}, nil
 }
 
-func (s *RngServerImpl) RandBytes(_ context.Context, request *RandBytesRequest) (*RandBytesResponse, error) {
-	resp, err := s.rngService.RandBytes(models.RandBytesRequest{
+func (s *RngServerImpl) RandBytes(ctx context.Context, request *RandBytesRequest) (*RandBytesResponse, error) {
+	resp, err := s.rngService.RandBytes(ctx, models.RandBytesRequest{
 		Length: &request.Length,
 	})
 	if err != nil {
@@ -54,8 +54,8 @@ func (s *RngServerImpl) RandBytes(_ context.Context, request *RandBytesRequest) 
 	return &RandBytesResponse{Data: resp.Data}, nil
 }
 
-func (s *RngServerImpl) RandIntegers(_ context.Context, request *RandIntegersRequest) (*RandIntegersResponse, error) {
-	resp, err := s.rngService.RandIntegers(models.RandIntegersRequest{
+func (s *RngServerImpl) RandIntegers(ctx context.Context, request *RandIntegersRequest) (*RandIntegersResponse, error) {
+	resp, err := s.rngService.RandIntegers(ctx, models.RandIntegersRequest{
 		Length: &request.Length,
 		Min:    &request.Min,
 		Max:    &request.Max,
@@ -66,8 +66,8 @@ func (s *RngServerImpl) RandIntegers(_ context.Context, request *RandIntegersReq
 	return &RandIntegersResponse{Data: resp.Data}, nil
 }
 
-func (s *RngServerImpl) RandUniform(_ context.Context, request *RandUniformRequest) (*RandUniformResponse, error) {
-	resp, err := s.rngService.RandUniform(models.RandUniformRequest{
+func (s *RngServerImpl) RandUniform(ctx context.Context, request *RandUniformRequest) (*RandUniformResponse, error) {
+	resp, err := s.rngService.RandUniform(ctx, models.RandUniformRequest{
 		Length: &request.Length,
 		Min:    &request.Min,
 		Max:    &request.Max,
@@ -78,8 +78,8 @@ func (s *RngServerImpl) RandUniform(_ context.Context, request *RandUniformReque
 	return &RandUniformResponse{Data: resp.Data}, nil
 }
 
-func (s *RngServerImpl) RandNormal(_ context.Context, request *RandNormalRequest) (*RandNormalResponse, error) {
-	resp, err := s.rngService.RandNormal(models.RandNormalRequest{
+func (s *RngServerImpl) RandNormal(ctx context.Context, request *RandNormalRequest) (*RandNormalResponse, error) {
+	resp, err := s.rngService.RandNormal(ctx, models.RandNormalRequest{
 		Length: &request.Length,
 		Mean:   &request.Mean,
 		StdDev: &request.Stddev,
@@ -90,8 +90,8 @@ func (s *RngServerImpl) RandNormal(_ context.Context, request *RandNormalRequest
 	return &RandNormalResponse{Data: resp.Data}, nil
 }
 
-func (s *RngServerImpl) RandBooleansBiasAmplified(_ context.Context, request *RandBooleansBiasAmplifiedRequest) (*RandBooleansBiasAmplifiedResponse, error) {
-	resp, err := s.rngService.RandBooleansBiasAmplified(models.RandBooleansBiasAmplifiedRequest{
+func (s *RngServerImpl) RandBooleansBiasAmplified(ctx context.Context, request *RandBooleansBiasAmplifiedRequest) (*RandBooleansBiasAmplifiedResponse, error) {
+	resp, err := s.rngService.RandBooleansBiasAmplified(ctx, models.RandBooleansBiasAmplifiedRequest{
 		Length:             &request.Length,
 		AmplificationLevel: &request.AmplificationLevel,
 	})
