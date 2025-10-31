@@ -21,5 +21,5 @@ package models
 
 type RandBooleansBiasAmplifiedRequest struct {
 	Length             *uint32 `schema:"length" validate:"required,gte=1,lte=8"`
-	AmplificationLevel *uint32 `schema:"amplification-level" validate:"required,gte=1,lte=16"`
+	AmplificationLevel *uint32 `schema:"amplification_level" validate:"required,gte=1,lte=16"`
 }
