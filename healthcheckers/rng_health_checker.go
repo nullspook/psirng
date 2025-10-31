@@ -35,9 +35,9 @@ func NewRngHealthChecker(rng *services.RngService) *RngHealthChecker {
 	return &RngHealthChecker{rngService: rng}
 }
 
-func (hc *RngHealthChecker) HealthCheck(_ context.Context) error {
-	if _, err := hc.rngService.RandBytes(randBytesCheckerRequest); err != nil {
-		if _, err := hc.rngService.RandBytes(randBytesCheckerRequest); err != nil {
+func (hc *RngHealthChecker) HealthCheck(ctx context.Context) error {
+	if _, err := hc.rngService.RandBytes(ctx, randBytesCheckerRequest); err != nil {
+		if _, err := hc.rngService.RandBytes(ctx, randBytesCheckerRequest); err != nil {
 			return err
 		}
 	}
