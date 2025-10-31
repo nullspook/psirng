@@ -171,10 +171,132 @@ func (c *RngController) RandBooleansBiasAmplified(w http.ResponseWriter, r *http
 	writeJsonResponse(w, resp)
 }
 
+func (c *RngController) StreamBooleans(w http.ResponseWriter, r *http.Request) {
+	var req models.StreamBooleansRequest
+	if err := decoder.Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	dataChan, errChan := c.rngService.StreamBooleans(r.Context(), req)
+	writeNDJsonStreamResponse(w, dataChan, errChan)
+}
+
+func (c *RngController) StreamBooleansBiasAmplified(w http.ResponseWriter, r *http.Request) {
+	var req models.StreamBooleansBiasAmplifiedRequest
+	if err := decoder.Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	dataChan, errChan := c.rngService.StreamBooleansBiasAmplified(r.Context(), req)
+	writeNDJsonStreamResponse(w, dataChan, errChan)
+}
+
+func (c *RngController) StreamBytes(w http.ResponseWriter, r *http.Request) {
+	var req models.StreamBytesRequest
+	if err := decoder.Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	dataChan, errChan := c.rngService.StreamBytes(r.Context(), req)
+	writeNDJsonStreamResponse(w, dataChan, errChan)
+}
+
+func (c *RngController) StreamIntegers(w http.ResponseWriter, r *http.Request) {
+	var req models.StreamIntegersRequest
+	if err := decoder.Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	dataChan, errChan := c.rngService.StreamIntegers(r.Context(), req)
+	writeNDJsonStreamResponse(w, dataChan, errChan)
+}
+
+func (c *RngController) StreamNormal(w http.ResponseWriter, r *http.Request) {
+	var req models.StreamNormalRequest
+	if err := decoder.Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	dataChan, errChan := c.rngService.StreamNormal(r.Context(), req)
+	writeNDJsonStreamResponse(w, dataChan, errChan)
+}
+
+func (c *RngController) StreamUniform(w http.ResponseWriter, r *http.Request) {
+	var req models.StreamUniformRequest
+	if err := decoder.Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	dataChan, errChan := c.rngService.StreamUniform(r.Context(), req)
+	writeNDJsonStreamResponse(w, dataChan, errChan)
+}
+
 func writeJsonResponse(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+}
+
+func writeNDJsonStreamResponse[T any](w http.ResponseWriter, dataChan <-chan T, errChan <-chan error) {
+	w.Header().Set("Content-Type", "application/x-ndjson")
+	w.Header().Set("Transfer-Encoding", "chunked")
+
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "streaming not supported", http.StatusInternalServerError)
+		return
+	}
+
+	enc := json.NewEncoder(w)
+
+	for {
+		select {
+		case err, ok := <-errChan:
+			if ok && err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			return
+		case chunk, ok := <-dataChan:
+			if !ok {
+				return
+			}
+			if err := enc.Encode(chunk); err != nil {
+				return
+			}
+			flusher.Flush()
+		}
 	}
 }

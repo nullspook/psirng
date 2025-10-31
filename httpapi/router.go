@@ -50,6 +50,13 @@ func NewRouter(rngController *RngController, rngHealthChecker healthz.HealthChec
 	router.MuxRouter.HandleFunc("/api/randnormal", rngController.RandNormal).Methods("GET")
 	router.MuxRouter.HandleFunc("/api/randbooleans-biasamplified", rngController.RandBooleansBiasAmplified).Methods("GET")
 
+	router.MuxRouter.HandleFunc("/api/streambooleans", rngController.StreamBooleans).Methods("GET")
+	router.MuxRouter.HandleFunc("/api/streambytes", rngController.StreamBytes).Methods("GET")
+	router.MuxRouter.HandleFunc("/api/streamintegers", rngController.StreamIntegers).Methods("GET")
+	router.MuxRouter.HandleFunc("/api/streamuniform", rngController.StreamUniform).Methods("GET")
+	router.MuxRouter.HandleFunc("/api/streamnormal", rngController.StreamNormal).Methods("GET")
+	router.MuxRouter.HandleFunc("/api/streambooleans-biasamplified", rngController.StreamBooleansBiasAmplified).Methods("GET")
+
 	router.MuxRouter.Use(LoggingMiddleware)
 
 	return &router
