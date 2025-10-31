@@ -5,7 +5,8 @@ An HTTP and gRPC API server for interacting with Quantum World Corporation
 (QWC) / ComScire QRNGs (Quantum Random Number Generators).
 
 This server eliminates driver-level buffering by flushing the internal buffer
-on every request, ensuring that the random numbers are freshly generated.
+on every request, ensuring that the random numbers are freshly generated. It
+also includes a bias amplification option to amplify subtle biases if present.
 
 Running using Docker
 --------------------
@@ -53,6 +54,16 @@ $ curl 'http://localhost:8080/api/randbooleans-biasamplified?length=3&amplificat
 
 $ curl 'http://localhost:8080/healthz'
 {"status":"OK","time":"2025-06-01T10:23:26.480337861Z"}
+```
+
+#### Streaming example
+
+```
+$ curl -N 'http://localhost:8080/api/streamintegers?min=-5&max=10&chunk_size=10'
+{"data":[3,5,1,4,0,2,-5,2,0,4]}
+{"data":[-3,6,-5,-5,4,-1,9,-4,-2,2]}
+{"data":[2,3,3,2,-2,-1,10,5,0,8]}
+...
 ```
 
 ### gRPC API
