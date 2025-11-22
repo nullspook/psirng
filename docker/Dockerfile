@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye AS build
+FROM golang:1.24-trixie AS build
 
 WORKDIR /app
 COPY . .
@@ -8,7 +8,7 @@ RUN chmod +x docker/install_deps.sh \
 
 RUN go build -o /usr/local/bin/psirng ./cmd/psirng
 
-FROM debian:bullseye-slim
+FROM debian:trixie-slim
 
 COPY --from=build /app/cert.pem /app/cert.pem
 COPY --from=build /app/key.pem /app/key.pem
