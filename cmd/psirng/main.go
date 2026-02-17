@@ -20,12 +20,11 @@
 package main
 
 import (
+	"bytes"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
 	"flag"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
 	"net"
 	"net/http"
@@ -35,7 +34,18 @@ import (
 	"psirng/httpapi"
 	"psirng/providers/rng"
 	"psirng/services"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
+
+var testingCertSha256 = []byte{
+	0x31, 0x47, 0x1C, 0x16, 0x80, 0xAA, 0xE3, 0xE9,
+	0xF7, 0x2C, 0x47, 0xC0, 0x58, 0xFF, 0x19, 0x3A,
+	0xCF, 0x7B, 0x27, 0x8B, 0xA1, 0xFD, 0xF1, 0x8D,
+	0x01, 0xFE, 0xFB, 0x30, 0x5A, 0xE3, 0x1A, 0x9E,
+}
 
 func main() {
 	certFilePath := flag.String("cert", "", "TLS certificate file")
@@ -74,8 +84,9 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		if cert.Subject.CommonName == "psirng testing" {
-			log.Println("WARNING: USING TESTING CERTIFICATE. DO NOT USE THIS IN PRODUCTION.")
+		certSha256 := sha256.Sum256(cert.Raw)
+		if bytes.Equal(certSha256[:], testingCertSha256) {
+			log.Print("WARNING: USING TESTING CERTIFICATE. DO NOT USE THIS IN PRODUCTION.\n\n")
 		}
 
 		creds, err := credentials.NewServerTLSFromFile(*certFilePath, *keyFilePath)
@@ -101,6 +112,8 @@ func main() {
 				log.Fatalln(err)
 			}
 		}()
+	} else {
+		log.Println("TLS certificate and key not provided, skipping HTTPS server startup")
 	}
 
 	log.Println("Starting HTTP server on port 8080")
